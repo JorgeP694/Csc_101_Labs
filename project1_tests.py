@@ -1,5 +1,5 @@
 #Name:
-#Section: 
+#Section:
 
 import data
 from project1 import *
