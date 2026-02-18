@@ -1,5 +1,5 @@
 # Name:
-# Section: 6 Due 2/13/26
+# Section: 
 #########################################################
 import math
 from unittest import result
