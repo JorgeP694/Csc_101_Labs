@@ -3,7 +3,7 @@
 from book_class import *
 from typing import Optional
 
-# Write your functions for each part in the space below.
+#Write your functions for each part in the space below.
 
 # Part 0
 
