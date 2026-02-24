@@ -1,6 +1,8 @@
 import Lab6
 import unittest
 
+from book_class import Book
+
 
 # Write your test cases for each part below.
 
@@ -63,16 +65,57 @@ class TestCases(unittest.TestCase):
 
 
     # Part 1
+    def test_selection_sort_books(self):
+        books = [Book(["Author1"], "Zoo"), Book(["Author2"], "Alpha"), Book(["Author3"], "Moon")]
+        expected = [Book(["Author2"], "Alpha"), Book(["Author3"], "Moon"), Book(["Author1"], "Zoo")]
+        Lab6.selection_sort_books(books)
+        actual = books
+        self.assertEqual(expected, actual)
 
-
+    def test_selection_sort_books_2(self):
+        books = []
+        expected = []
+        Lab6.selection_sort_books(books)
+        actual = books
+        self.assertEqual(expected, actual)
     # Part 2
+    def test_swap_case(self):
+        input = "Hi There!"
+        expected = "hI tHERE!"
+        actual = Lab6.swap_case(input)
+        self.assertEqual(expected, actual)
 
+    def test_swap_case_2(self):
+        input = "Python LoL!"
+        expected = "pYTHON lOl!"
+        actual = Lab6.swap_case(input)
+        self.assertEqual(expected, actual)
 
     # Part 3
+    def test_str_translate(self):
+        input = "abcdcba"
+        expected = "xbcdcbx"
+        actual = Lab6.str_translate(input, "a", "x")
+        self.assertEqual(expected, actual)
 
+    def test_str_translate_2(self):
+        input = "hello"
+        expected = "hello"
+        actual = Lab6.str_translate(input, "z", "q")
+        self.assertEqual(expected, actual)
 
     # Part 4
+    def test_histogram_1(self):
+        input = "a b a a c b"
+        expected = {"a": 3, "b": 2, "c": 1}
+        actual = Lab6.histogram(input)
+        self.assertEqual(expected, actual)
 
+    def test_histogram_2(self):
+        input = ""
+        expected = {}
+        actual = Lab6.histogram(input)
+        self.assertEqual(expected, actual)
 
 
 
