@@ -1,6 +1,6 @@
 # Lab 4
-# Your name: Jorge Preciado
-# Your Section:-9
+# Your name: 
+# Your Section:
 
 
 # Write your functions for each part in the space below.
