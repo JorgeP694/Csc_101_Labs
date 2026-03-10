@@ -70,22 +70,18 @@ def read_file(file_name: str) -> tuple[list[str], list[str]]:
 def create_division(list_str: list[str]) -> list[Division]:
     divisions: list[Division] = []
     seen: set[int] = set()
-
     for line in list_str:
         parts = [x.strip() for x in line.strip().split(",")]
         if len(parts) < 2:
             continue
-
         try:
             id_num = int(parts[0])
         except ValueError:
             continue
-
         if id_num % 100 == 0 and id_num not in seen:
             div_name = parts[1]
             divisions.append(Division(id_num, div_name))
             seen.add(id_num)
-
     return divisions
 
 
@@ -101,37 +97,28 @@ def create_graduate(list_str: list[str]) -> list[Graduate]:
         parts = [x.strip() for x in line.strip().split(",")]
         if len(parts) < 2:
             continue
-
         try:
             id_num = int(parts[0])
         except ValueError:
             continue
-
         if id_num % 100 == 0:
             continue
-
         if id_num in seen_major_ids:
             continue
         seen_major_ids.add(id_num)
-
         major = parts[1]
-
         def get(i: int) -> str:
             return parts[i] if i < len(parts) else ""
-
         bach_male = _safe_int(get(2))
         bach_female = _safe_int(get(3))
         mast_male = _safe_int(get(4))
         mast_female = _safe_int(get(5))
         doc_male = _safe_int(get(6))
         doc_female = _safe_int(get(7))
-
         bachelor = (bach_female, bach_male)
         master = (mast_female, mast_male)
         doctor = (doc_female, doc_male)
-
         grads.append(Graduate(id_num, major, bachelor, master, doctor))
-
     return grads
 
 
@@ -139,28 +126,68 @@ def create_graduate(list_str: list[str]) -> list[Graduate]:
 # Input: lst_div_obj (list[Division]), lst_grad_obj (list[Graduate])
 # Output: None
 # Purpose: Create one CSV file per division with totals per major (female+male) for each degree.
-def create_files(lst_div_obj: list[Division], lst_grad_obj: list[Graduate]) -> None:
-    header1 = ("This table shows Bachelor's, master's, and doctor's degrees "
-               "conferred by postsecondary institutions, of student and "
-               "discipline division: 2017-18")
-    header2 = "ID,Major,Bachelor,Master,Doctor"
-
-    file_map = {
-        3200: "agriculture.csv",
-        3400: "computer.csv",
-        3600: "education.csv",
-        3800: "engineering.csv",
-    }
-
+def create_files(list_str: list[Division], lst_grad_obj: list[Graduate], lst_div_obj=None) -> None:
+    first_line = 'This table shows '
+    second_line = 'id,major,bachelor,master,doctor'
     for div in lst_div_obj:
-        filename = file_map.get(div.id, f"{div.id}.csv")
-        with open(filename, "w", encoding="utf-8") as f:
-            f.write(header1 + "\n")
-            f.write(header2 + "\n")
+        words = div.division_name.split()
+        first_word = words[0]
+        filename=first_word + ".csv"
+        file=open(filename, "w", encoding="utf-8")
+        file.write(first_line + "\n")
+        file.write(second_line + "\n")
+        for g in lst_grad_obj:
+            if g.id//100==div.di//100:
+                bachelor = g.bachelor[0]+g.bachelor[1]
+                master = g.master[0]+g.master[1]
+                doctor = g.doctor[0]+g.doctor[1]
+                line = str(g.id)+" " + str(g.major) + " " + str(bachelor) + " " + str(master) + " " + str(doctor)
+                file.write(line + "\n")
+        file.close()
 
-            for g in lst_grad_obj:
-                if g.id // 100 == div.id // 100:
-                    total_b = g.bachelor[0] + g.bachelor[1]
-                    total_m = g.master[0] + g.master[1]
-                    total_d = g.doctor[0] + g.doctor[1]
-                    f.write("{},{},{},{},{}\n".format(g.id, g.major, total_b, total_m, total_d))
+#input:division_name (str)
+#output:tuple[int, float]
+#example:find_total_avg_of_division("Agriculture") -> (total, average)
+
+def find_total_avg_of_division (division_name: str) -> tuple:
+    words = division_name.split()
+    first_word = words[0]
+    filename=first_word+".csv"
+    file = open(filename)
+    lines = file.readlines()
+    file.close()
+    total = 0
+    count = 0
+    for i in range(2, len(lines)):
+        parts = lines[i].split()
+        if len(parts) >= 5:
+            bachelor = int(parts[2])
+            master = int(parts[3])
+            doctor = int(parts[4])
+            total = total + bachelor + master + doctor
+            count = count + 1
+        if count==0:
+            average =0.0
+        else:
+            average = total/count
+        return total, average
+    return None
+
+
+# Input: lst_grad_obj (list[Graduate])
+# Output: tuple[int, float]
+# Example: find_graduate_total_avg(graduates) -> (total, average)
+def find_graduate_total_avg(lst_grad_obj: list[Graduate]) -> tuple[int, float]:
+    total = 0
+    count = 0
+    for g in lst_grad_obj:
+        bachelor_total = g.bachelor[0] + g.bachelor[1]
+        master_total = g.master[0] + g.master[1]
+        doctor_total = g.doctor[0] + g.doctor[1]
+        total = total + bachelor_total + master_total + doctor_total
+        count = count + 1
+    if count == 0:
+        average = 0.0
+    else:
+        average = total / count
+    return total, average

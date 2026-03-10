@@ -77,17 +77,13 @@ class TestCases(unittest.TestCase):
         self.assertEqual(grads[0].bachelor, (2, 10))
 
     def test_create_files_creates_file(self):
-        with tempfile.TemporaryDirectory() as td:
-            cwd = os.getcwd()
-            os.chdir(td)
-            try:
-                data = self._sample_csv().splitlines()[3:]
-                divs = create_division(data)
-                grads = create_graduate(data)
-                create_files(divs, grads)
-                self.assertTrue(os.path.exists("computer.csv"))
-            finally:
-                os.chdir(cwd)
+        with tempfile.TemporaryDirectory() as temp_dir:
+            os.chdir(temp_dir)
+            data = self._sample_csv().splitlines()[3:]
+            divs = create_division(data)
+            grads = create_graduate(data)
+            create_files(divs, grads)
+            self.assertTrue(os.path.exists("Computer.csv"))
 
     def test_create_files_writes_correct_header(self):
         with tempfile.TemporaryDirectory() as td:
